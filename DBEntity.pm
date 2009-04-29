@@ -10,6 +10,12 @@ my $db;
 sub new {
 	my $class = shift;
 	my $obj = bless {}, $class;
+	
+	my @fields = @{$self->_fields->[0]};
+	my %fields = %{$self->_fields->[1]};
+    foreach my $key (keys %params){
+        $obj->$key($params{$key}) if grep { $_ eq $key } @fields;
+    }
 	return $obj;
 }
 
