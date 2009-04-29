@@ -29,7 +29,7 @@ sub _load {
 	my $self = shift;
 	my $row = shift;
 
-	my @fields = @{$self->_fields->[0]};key
+	my @fields = @{$self->_fields->[0]};
 	my %fields = %{$self->_fields->[1]};
 
 	for (keys %$row) {
