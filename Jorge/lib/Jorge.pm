@@ -47,7 +47,7 @@ will get used to it sooner that you may think.
 
     sub _fields {
 
-        my $table_name = 'User';
+        my $table_name = 'YourClass';
 
         my @fields = qw(
             Id
@@ -171,7 +171,52 @@ request ticket on CPAN Request Tracker at:
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Jorge>
     
 Another thing to consider is that, even if the get_by() method finds more 
-than one match, it will allways use the first one.    
+than one match, it will allways use the first one.
+
+If you need to retrieve more than 1 element at a time, then you need 
+Jorge::ObjectCollection
+
+=head2 Defining Your new Jorge based Object Collection
+
+=head3 YourClassCollection.pm
+
+    package YourClassCollection;
+    use base 'Jorge::ObjectCollection';
+
+    use YourClass;
+
+    use strict;
+
+    sub create_object {
+	    return new YourClass;
+    }
+
+    ;1
+
+And that's it. Instant gratification.
+
+Now you can create a new YourClassCollection object and get multiple 
+objects from the database.
+
+How? simple. Just pass the parameters to get the matching objects from the
+database.
+
+=head3 YourInstanceScript.pl
+
+    
+    #!/usr/bin/perl
+    use Users;  # (note the convention. for DBEntity based packages we used
+                # singular form of the name and the plural form form
+                # for ObjectCollection based objects, similar as Rail's 
+                # Active::Record does.
+
+    my $users = Users->new();
+    my %params;
+    $params{Email} = 'coco@foo.com';
+    $users->get_all(%params);
+    while (my $user = $users->get_next){
+        print $user->Id;
+    }
 
 =head1 AUTHORS
 
