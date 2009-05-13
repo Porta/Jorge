@@ -1,6 +1,5 @@
 package Jorge::ObjectCollection;
 
-use Data::Dumper;
 
 use strict;
 

@@ -2,7 +2,6 @@ package Jorge::Extended;
 use base 'Jorge::DBEntity';
 
 #Helper class to extend DBEntity.pm
-use Data::Dumper;
 use Digest::MD5;
 use strict;
 
@@ -54,11 +53,11 @@ sub encodeMd5 {
 		$md5->add($k);
 	}
 
-#	if ($params{Lenght}){
-#		return substr($md5->hexdigest,0,$params{Lenght});
-#	}else{
+	if ($params{Lenght}){
+		return substr($md5->hexdigest,0,$params{Lenght});
+	}else{
 		return substr($md5->hexdigest,0,8);
-#	}
+	}
 }
 
 ;1

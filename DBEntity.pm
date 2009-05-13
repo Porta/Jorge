@@ -1,21 +1,21 @@
 package Jorge::DBEntity;
 
 use Date::Manip;
-use Data::Dumper;
 use Jorge::DB;
+
 use strict;
 
 my $db;
 
 sub new {
 	my $class = shift;
-	my $obj = bless {}, $class;
-	
+    my %params = @_;
+	my $self = bless {}, $class;
 	my @fields = @{$self->_fields->[0]};
-    foreach my $key (keys %params){
-        $obj->$key($params{$key}) if grep { $_ eq $key } @fields;
-    }
-	return $obj;
+        foreach my $key (keys %params){
+            $self->$key($params{$key}) if grep { $_ eq $key } @fields;
+        }
+	return $self;
 }
 
 sub _db {
