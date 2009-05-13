@@ -1,0 +1,12 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+lib/Jorge.pm
+lib/Jorge/Config.pm
+lib/Jorge/DB.pm
+lib/Jorge/DBEntity.pm
+lib/Jorge/ObjectCollection.pm
+t/00-load.t
+t/pod-coverage.t
+t/pod.t
