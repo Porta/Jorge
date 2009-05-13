@@ -41,10 +41,10 @@ will get used to it sooner that you may think.
 =head2 Defining your new Jorge based class
 
 =head3 YourClass.pm
-    
+
     package YourClass
     use base Jorge::DBEntity;
-    
+
     sub _fields {
 
         my $table_name = 'User';
@@ -108,26 +108,86 @@ If the database info you provided in the config file was accurate and you
 already created the database (Jorge will not create your database, at least, 
 not now, but likely to change in next versions) You should be able now to
 start interacting with it.
+
 Try now something like this, later on your instance script:
 
     $user->insert;
     print $user->Id; #if the insert was successful, you $user->Id should
     #return the inserted id. 
 
+Ideally, that should have worked fine and now you can start using Jorge.
 
-=head1 AUTHOR
+Available method for Jorge::DBEntity based classes are:
 
-Mondongo C<< <mondongo at gmail.com> >> Did the important job and started this beauty.
+=over 2
 
-Julian Porta, C<< <julian.porta at gmail.com> >> took the code and tried to make it harder, better, faster, stronger.
+=item insert
+
+=item update
+
+=item delete
+
+=item get_by
+
+All those methods are pretty self explanatory, but this should guide you
+through the basic operations
+
+=back
+
+=head3 YourInstanceScript.pl
+
+    #!/usr/bin/perl
+    use User;
+
+    my $user = User->new(Email => 'jorge@foo.com', Password => 'sshhhhh');
+    $user->insert;
+    #now $user->Id returns the inserted id from the database
+    $user->Email('updated_mail@bar.com');
+    $user->update;
+    #same $user->Id, but $user->Email was updated in the database
+    $user->delete
+    #now, even while the $user exists in memory, is not present anymore on
+    the database
+
+    #now, let's try something more complex
+    my $user2 = User->new(Email => 'coco@foo.com', Password => 'secret');
+    $user2->get_by(qw[Email Password]);
+    print $user2->Id;
+    # Now, if there is a User in with Email = 'coco@foo.com' AND a Password
+    # = 'secret' then $user2->Id will be a positive integer. Otherwhise, it
+    # will return undef
+
+    $user2->get_by('Email'); #will look only for the Email field.
+
+
+As you can see, you should ALLWAYS check your object to confirm that it 
+found at match before using it.
+
+I'm considering implementing some error checking method, but since I got
+used to check for Id's on my objects.
+
+If you have a proposal to solve this, feel free to email or open a 
+request ticket on CPAN Request Tracker at:
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Jorge>
+    
+Another thing to consider is that, even if the get_by() method finds more 
+than one match, it will allways use the first one.    
+
+=head1 AUTHORS
+
+Mondongo, C<< <mondongo at gmail.com> >> Did the important job and started 
+this beauty.
+
+Julian Porta, C<< <julian.porta at gmail.com> >> took the code and tried 
+to make it harder, better, faster, stronger.
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-jorge at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Jorge>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-jorge at rt.cpan.org>,
+or through the web interface at 
+ L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Jorge>.  
+I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
 
 
 =head1 SUPPORT
@@ -140,6 +200,10 @@ You can find documentation for this module with the perldoc command.
 You can also look for information at:
 
 =over 4
+
+=item * Github Project Page
+
+L<http://github.com/Porta/Jorge/tree/master>
 
 =item * RT: CPAN's request tracker
 
@@ -162,6 +226,7 @@ L<http://search.cpan.org/dist/Jorge/>
 
 =head1 ACKNOWLEDGEMENTS
 
+Mondongo C<< <mondongo at gmail.com> >> For starting this.
 
 =head1 COPYRIGHT & LICENSE
 
