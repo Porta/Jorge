@@ -218,6 +218,43 @@ database.
         print $user->Id;
     }
 
+Available method for Jorge::ObjectCollection based classes are:
+
+=over 2
+
+=item get_all
+
+=item get_count
+
+=item get_next
+
+
+Again, all those methods are pretty self explanatory.
+
+get_all and get_count can receive parameters (as a hash). If they dont,
+both will retrive all the rows from the database to provide a result.
+
+
+=head2 Params Syntax for ObjectCollection based objects
+
+Simplest case: Name equals some value.
+
+    my %params = {Name => 'Jorge'};
+
+Moving on...
+
+    my %params = {Name => ['!=', 'Jorge']};
+
+Let's continue
+
+    my %params = {Price => ['>', 12]};
+
+    my %params = {Price => ['>', 12], Id => ['<', 30]};
+    
+
+=back
+
+
 =head1 AUTHORS
 
 Mondongo, C<< <mondongo at gmail.com> >> Did the important job and started 
