@@ -249,7 +249,13 @@ Let's continue
 
     my %params = {Price => ['>', 12]};
 
-    my %params = {Price => ['>', 12], Id => ['<', 30]};
+    my %params = {Price => ['>', 12], Id => ['<', 30]}; #That's a AND. Both
+    #parameters should match
+    
+    my %params = {Price => 'is null'}
+    
+    
+    
     
 
 =back
