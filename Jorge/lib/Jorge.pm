@@ -211,8 +211,7 @@ database.
                 # Active::Record does.
 
     my $users = Users->new();
-    my %params;
-    $params{Email} = 'coco@foo.com';
+    my %params = (Email => 'coco@foo.com');
     $users->get_all(%params);
     while (my $user = $users->get_next){
         print $user->Id;
@@ -239,34 +238,52 @@ both will retrive all the rows from the database to provide a result.
 
 Simplest case: Name equals some value.
 
-    my %params = {Name => 'Jorge'};
+    my %params = (Name => 'Jorge');
 
 Moving on...
 
-    my %params = {Name => ['!=', 'Jorge']};
+    my %params = (Name => ['!=', 'Jorge']);
 
 Let's continue
 
-    my %params = {Price => ['>', 12]};
+    my %params = (Price => ['>', 12]);
 
-    my %params = {Price => ['>', 12], Id => ['<', 30]}; #That's a AND.
+    my %params = (Price => ['>', 12], Id => ['<', 30]); #That's a AND.
     
-    my %params = {Price => 'is null'}
+    my %params = (Price => 'is null');
     
     #OR support. Yeah!
-    my %params = {Name => [ 'or',[ ['=','Bill'],['=','Steve'],['=','Linus']}
+    my %params = (Name => [ 'or',[ ['=','Bill'],['=','Steve'],['=','Linus']);
     
     #IN
-    my %params = {Id => [ 'in', qw(1 3 5 7 9)]}
+    my %params = (Id => [ 'in', qw(1 3 5 7 9)]);
     
     #BETWEEN
     #NOTE: Allways provide min and max values
-    my %params = {Id => ['between',(1,100)]};
+    my %params = (Id => ['between',(1,100)]);
     
     #Use a object as a parameter
-    my %params = {User => $user};
+    my %params = (User => $user);
     
-    
+=head2 get_all, get_next: Iterating.
+
+Once you invoke the method get_all (hint. if you invoke it without params)
+it will do a SELECT * FROM __table__, retrieving all the elements of that
+table/class.
+
+In fact, no query will retrieve all the objects, but only their Id's (or 
+primary keys.)
+
+After you retrieve all the matching objects, you can start iterating pulling
+elements from the array of matching elements invoking the method get_next
+
+    my $elements = Elements->new;
+    my %params = (Field => 'Value');
+    $elements->get_all(%params);
+    while (my $element = $elements->get_next){
+        #We're Iterating!
+        print $element->Id;
+    }
 
 =back
 
