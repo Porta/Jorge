@@ -249,11 +249,15 @@ Let's continue
 
     my %params = {Price => ['>', 12]};
 
-    my %params = {Price => ['>', 12], Id => ['<', 30]}; #That's a AND. Both
-    #parameters should match
+    my %params = {Price => ['>', 12], Id => ['<', 30]}; #That's a AND.
     
     my %params = {Price => 'is null'}
     
+    #OR support. Yeah!
+    my %params = {Name => [ 'or',[ ['=','Bill'],['=','Steve'],['=','Linus']}
+    
+    #IN
+    my %params = {Id => [ 'in', qw(1 3 5 7 9)]}
     
     
     

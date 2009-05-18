@@ -88,13 +88,13 @@ sub _create_query {
 			}
 			if (lc($oper) eq 'in') {my $str = '?' x $value;
     			#IN expects an array in $value
-			    push (@query_params, @$value);
 			    my $str = join(",",map{'?'} @$value);
 				if (@query_params) {
 					$query .= " AND $key IN ($str)";
 				} else {
 					$query .= " WHERE $key IN ($str)";
 				}
+			    push (@query_params, @$value);
 				next;
 			}
 			#Porta.
@@ -188,27 +188,27 @@ sub _create_query {
 	#will replace the AND that applies to the Description and User fields into the query string
 	#It first try to replace the AND before the field and, if the regex does not match, tries to apply it
 	#to the AND after the field name.
-	if ($params->{_or}) {
-		if (ref($params->{_or}) eq 'ARRAY'){
-			for my $param (@{$params->{_or}}) {
-				if ($query =~ m/AND (\()? $param/g) {
-					$query =~ s/AND (\()? $param/OR $1 $param/g;
-				}elsif ($query =~ m/(\()? $param \= \? AND/g){
-					$query =~ s/(\()? $param \= \? AND/$1 $param = ? OR/g;
-				}else{}
-			}
-		}else{
-			
-			my $param = $params->{_or};
-			if ($query =~ m/AND(\s\()? $param/g) {
-				#replace the AND present Before the field.
-				$query =~ s/AND(\s\()? $param/OR $1 $param/g;
-			}elsif ($query =~ m/(\()? $param \= \? AND/g){
-				#replace the AND present After the field.
-				$query =~ s/(\()? $param \= \? AND/$1 $param = ? OR/g;
-			}else{}
-		}
-	}
+#	if ($params->{_or}) {
+#		if (ref($params->{_or}) eq 'ARRAY'){
+#			for my $param (@{$params->{_or}}) {
+#				if ($query =~ m/AND (\()? $param/g) {
+#					$query =~ s/AND (\()? $param/OR $1 $param/g;
+#				}elsif ($query =~ m/(\()? $param \= \? AND/g){
+#					$query =~ s/(\()? $param \= \? AND/$1 $param = ? OR/g;
+#				}else{}
+#			}
+#		}else{
+#			
+#			my $param = $params->{_or};
+#			if ($query =~ m/AND(\s\()? $param/g) {
+#				#replace the AND present Before the field.
+#				$query =~ s/AND(\s\()? $param/OR $1 $param/g;
+#			}elsif ($query =~ m/(\()? $param \= \? AND/g){
+#				#replace the AND present After the field.
+#				$query =~ s/(\()? $param \= \? AND/$1 $param = ? OR/g;
+#			}else{}
+#		}
+#	}
 
 	if ($pagelength) {
 		$query .= " LIMIT $page,$pagelength";
