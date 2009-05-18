@@ -86,12 +86,14 @@ sub _create_query {
 				push (@query_params, @p);
 				next;
 			}
-			
-			if (lc($oper) eq 'in') {
+			if (lc($oper) eq 'in') {my $str = '?' x $value;
+    			#IN expects an array in $value
+			    push (@query_params, @$value);
+			    my $str = join(",",map{'?'} @$value);
 				if (@query_params) {
-					$query .= " AND $key IN ($value)";
+					$query .= " AND $key IN ($str)";
 				} else {
-					$query .= " WHERE $key IN ($value)";
+					$query .= " WHERE $key IN ($str)";
 				}
 				next;
 			}
