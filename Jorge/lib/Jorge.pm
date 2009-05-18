@@ -259,6 +259,12 @@ Let's continue
     #IN
     my %params = {Id => [ 'in', qw(1 3 5 7 9)]}
     
+    #BETWEEN
+    #NOTE: Allways provide min and max values
+    my %params = {Id => ['between',(1,100)]};
+    
+    #Use a object as a parameter
+    my %params = {User => $user};
     
     
 

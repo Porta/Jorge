@@ -53,11 +53,11 @@ sub encodeMd5 {
 		$md5->add($k);
 	}
 
-	if ($params{Lenght}){
-		return substr($md5->hexdigest,0,$params{Lenght});
-	}else{
-		return substr($md5->hexdigest,0,8);
-	}
+#	if ($params{Lenght}){
+#		return substr($md5->hexdigest,0,$params{Lenght});
+#	}else{
+#		return substr($md5->hexdigest,0,8);
+#	}
 }
 
 ;1

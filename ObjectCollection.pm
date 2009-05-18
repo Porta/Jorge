@@ -103,18 +103,14 @@ sub _create_query {
 			#$params{Count} = ['between',$q->param('mv') || '1',$q->param('Mv') || '1000000'];
 			#Start MySql BETWEEN Support.
 			if (lc($oper) eq 'between') {
-				my $value2 = $params->{$key}->[2];
 				if (@query_params) {
 					$query .= " AND $key BETWEEN ? AND ?";
 				} else {
 					$query .= " WHERE $key BETWEEN ? AND ?";
 				}
-				push @query_params, $value;
-				push @query_params, $value2;
+				push @query_params, @$value;
 				next;
 			}
-			
-			#End MySql BETWEEN Support.
 			
 			#Joaquin
 			#Added MySQL IS NULL support
