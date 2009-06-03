@@ -1,15 +1,18 @@
-package Jorge::DB;
+package Jorge::Plugin::Md5;
 
-use DBI;
-use Jorge::Config;
+use Digest::MD5;
+use vars qw($VERSION @EXPORT);
 
 use warnings;
 use strict;
 
+@EXPORT = qw(
+  encodeMd5
+);
 
 =head1 NAME
 
-Jorge::DB - Interface to Database. Currently suporting MySQL.
+Jorge::Plugin::Md5 - Sample plugin to provide Md5 encoding of Jorge Params
 
 =head1 VERSION
 
@@ -18,82 +21,32 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-my $c = new Jorge::Config;
 
-sub new {
-	my $class = shift;
-	my $db = $c->get_database;
-	my $struct = {
-		_dbh => DBI->connect(
-						'dbi:mysql:database=' . $db->{db} . ';host=' . $db->{host} . ';port=3306',
-						$db->{user},
-						$db->{password}
-					)
-	};
-    my $self = bless $struct, $class;
-    return $self;
+sub import {
+    my $pkg     = shift;
+    my $callpkg = caller;
+    no strict 'refs';
+    foreach my $sym (@EXPORT) {
+        *{"${callpkg}::$sym"} = \&{$sym};
+    }
 }
 
-sub get_dbh {
-    my $self = shift;
-    return $self->{_dbh};
-}
-
-sub execute {
-    my $self     = shift;
-    my $db_query = shift;
-
+sub encodeMd5 {
+    my $self   = shift;
     my @params = @_;
 
-    my $dbh = $self->get_dbh;
-    my $sth = $dbh->prepare($db_query);
+    my $md5 = Digest::MD5->new;
 
-    if ( $sth->execute(@params) ) {
-        return $sth;
+    foreach my $key (@params) {
+        my $k = $self->{$key};
+        $md5->add($k);
     }
-    else {
-        print STDERR $dbh->{err};
-        return 0;
-    }
+    return substr( $md5->hexdigest, 0, 8 );
 }
-
-sub prepare {
-    my $self  = shift;
-    my $query = shift;
-    my $dbh   = $self->get_dbh;
-
-    return $dbh->prepare($query);
-}
-
-sub get_last_insert_id {
-    my $self = shift;
-    my $dbh  = $self->get_dbh;
-    return $dbh->{'mysql_insertid'};
-}
-
-sub execute_prepared {
-    my $self = shift;
-    my $sth  = shift;
-
-    my @params = @_;
-    $sth->execute(@params);
-    if ( $self->{_dbh}->errstr ) {
-        warn '***ERROR: ' . $self->{_dbh}->errstr . ' : ' . $sth->{Statement};
-    }
-
-    return $sth;
-}
-
-sub errstr {
-    my $self = shift;
-    return $self->{_dbh}->errstr;
-}
-
 
 =head1 SYNOPSIS
 
-It is not expected accessing to this package directly. So, move to main
-Jorge docs for reference.
+Imports the function encodeMd5 into Jorge::DBEntity namespace.
 
 =head1 AUTHORS
 
@@ -161,3 +114,4 @@ under the same terms as Perl itself.
 =cut
 
 1;    # End of Jorge::::DB
+
