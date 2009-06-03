@@ -33,7 +33,6 @@ sub get_by {
 
 	my $columns = join(' AND ', @cols);
 	my $query = "SELECT * FROM $table_name WHERE ($columns)";
-	#warn ($query, @vals);
 	my $return = $self->_db->prepare($query);
 	my $sth = $self->_db->execute_prepared($return,@vals);
 
@@ -52,12 +51,7 @@ sub encodeMd5 {
 		my $k = $self->{$key};
 		$md5->add($k);
 	}
-
-#	if ($params{Lenght}){
-#		return substr($md5->hexdigest,0,$params{Lenght});
-#	}else{
-#		return substr($md5->hexdigest,0,8);
-#	}
+	return substr($md5->hexdigest,0,8);
 }
 
 ;1

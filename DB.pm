@@ -4,16 +4,16 @@ use DBI;
 
 use Jorge::Config;
 use strict;
-
 my $c = new Jorge::Config;
 
 sub new {
 	my $class = shift;
+	my $db = $c->get_database;
 	my $struct = {
 		_dbh => DBI->connect(
-						'dbi:mysql:database=' . $c->db_name . ';host=' . $c->db_host . ';port=3306',
-						$c->db_user,
-						$c->db_password
+						'dbi:mysql:database=' . $db->{db} . ';host=' . $db->{host} . ';port=3306',
+						$db->{user},
+						$db->{password}
 					)
 	};
 	my $self = bless $struct, $class;

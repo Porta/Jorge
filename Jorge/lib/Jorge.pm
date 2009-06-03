@@ -74,10 +74,10 @@ Now, you need to provide Jorge with a config file containing
 the database info (this is likely to change in future and add options,
 like passing the config info as parameters)
 
-create a config/config.yml file (in your current working dir, relative
+create a config/jorge.yml file (in your current working dir, relative
 to the path the instance script will be working)
 
-=head3 config/config.yml
+=head3 config/jorge.yml
 
     database:
         host: DB_HOST
@@ -256,7 +256,7 @@ Let's continue
     my %params = (Name => [ 'or',[ ['=','Bill'],['=','Steve'],['=','Linus']);
     
     #IN
-    my %params = (Id => [ 'in', qw(1 3 5 7 9)]);
+    my %params = (Id => [ 'in', [1,2,3,5,7,11] ]);
     
     #BETWEEN
     #NOTE: Allways provide min and max values
@@ -284,6 +284,22 @@ elements from the array of matching elements invoking the method get_next
         #We're Iterating!
         print $element->Id;
     }
+
+=head1 Setup
+
+=head2 Config File
+
+Jorge expects a YAML config file under a certain directory/filename.
+Default value is config/jorge.yml relative to the working dir path
+If you need to override or change the location of the config file, you can
+modify the config_file variable in Jorge::Config file
+
+    Jorge::Config::$CONFIG_FILE = 'path to your config';
+
+In your instance script / Main package.
+
+
+
 
 =back
 

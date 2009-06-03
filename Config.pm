@@ -3,19 +3,15 @@ package Jorge::Config;
 use Config::YAML;
 use strict;
 
-my $c;
+our $CONFIG_FILE = 'config/jorge.yml';
 
 sub new {
-	my $class = shift;
-	my $obj = bless {}, $class;
-	-e ('config/config.yml') || die 'config file not found on config/config.yml';
-	$c = Config::YAML->new(config => 'config/config.yml');
-	return $obj;
+    my $class = shift;
+    my $obj = bless {}, $class;
+    -e ($CONFIG_FILE) || die 'config file not found on ' . $CONFIG_FILE;
+    my $c;
+    $c = Config::YAML->new(config => $CONFIG_FILE);
+    return $c;
 }
-
-sub db_host { return $c->{database}->{host} }
-sub db_name { return $c->{database}->{db} }
-sub db_user { return $c->{database}->{user} }
-sub db_password { return $c->{database}->{password} }
 
 1;

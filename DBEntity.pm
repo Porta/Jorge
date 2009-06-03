@@ -216,7 +216,6 @@ sub before_insert{
 	return 1;
 }
 
-
 sub before_update{
 	my $self = shift;
 	return 1;
