@@ -1,23 +1,22 @@
 package Jorge::ObjectCollection;
 
-
 use strict;
 
 sub new {
-	my $class = shift;
-	return bless [], $class;
+    my $class = shift;
+    return bless [], $class;
 }
 
 sub get_next {
-	my $self = shift;
+    my $self = shift;
 
-	my $value = shift @$self;
-	return 0 unless $value;
+    my $value = shift @$self;
+    return 0 unless $value;
 
-	my $obj = $self->create_object;
-	if ($obj->get_from_db($value)) { return $obj }
+    my $obj = $self->create_object;
+    if ( $obj->get_from_db($value) ) { return $obj }
 
-	return 0;
+    return 0;
 }
 
 sub _create_query {
@@ -187,36 +186,65 @@ sub get_count {
 	my $self = shift;
 	my $params = { @_ };
 
-	my $obj = $self->create_object;
+    my $obj = $self->create_object;
 
-	my ($query, $query_params) = $self->_create_query($params);
-	$query =~ s/^SELECT .+? FROM/SELECT COUNT(*) AS q FROM/;
+    my ( $query, $query_params ) = $self->_create_query($params);
+    $query =~ s/^SELECT .+? FROM/SELECT COUNT(*) AS q FROM/;
 
-	my $sth;
-	$sth = $obj->_db->execute($query, @$query_params);
-	my $row = $sth->fetchrow_hashref;
+    my $sth;
+    $sth = $obj->_db->execute( $query, @$query_params );
+    my $row = $sth->fetchrow_hashref;
 
-	return $row->{q};
+    return $row->{q};
 }
 
 sub get_all {
-	my $self = shift;
-	my $params = { @_ };
+    my $self   = shift;
+    my $params = {@_};
 
-	my ($query, $query_params);
-	if ($params->{_query}) {
-		($query, $query_params) = ($params->{_query}, $params->{_query_params});
-	} else {
-		($query, $query_params) = $self->_create_query($params);
-	}
+    my ( $query, $query_params );
+    if ( $params->{_query} ) {
+        ( $query, $query_params ) =
+          ( $params->{_query}, $params->{_query_params} );
+    }
+    else {
+        ( $query, $query_params ) = $self->_create_query($params);
+    }
 
-	my $obj = $self->create_object;
-	my $sth = $obj->_db->execute($query, @$query_params);
-	while (my $row = $sth->fetchrow_hashref) {
-		push @$self, $row->{$obj->_pk->[0]};
-	}
+    if ( $params->{_order_by} ) {
+        if ( ref( $params->{_order_by} ) eq 'ARRAY' ) {
+            for my $param ( @{ $params->{_order_by} } ) {
+                my $asc;
+                if ( $param =~ /^\+/ ) {
+                    $asc = 1;
+                    substr( $param, 0, 1 ) = '';
+                }
+                next unless grep { $_ eq $param } @fields;
+                if ( $query !~ /ORDER BY/ ) {
+                    $query .= " ORDER BY $param" . ( $asc ? ' ASC' : ' DESC' );
+                }
+                else {
+                    $query .= ", $param" . ( $asc ? ' ASC' : ' DESC' );
+                }
+            }
+        }
+        else {
+            my $param = $params->{_order_by};
+            my $asc;
+            if ( $param =~ /^\+/ ) {
+                $asc = 1;
+                substr( $param, 0, 1 ) = '';
+            }
+            if ( grep { $_ eq $param } @fields ) {
+                $query .= ' ORDER BY ' . $param . ( $asc ? ' ASC' : ' DESC' );
+            }
+        }
+    }
 
-	return scalar @$self;
+    return scalar @$self;
 }
 
 1;
+
+
+

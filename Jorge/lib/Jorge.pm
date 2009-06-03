@@ -15,7 +15,6 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
 Not ready for Class::DBI or DBIx::Class? Dissapointed by Tangram? Still
@@ -369,4 +368,5 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of Jorge
+1;    # End of Jorge
+
