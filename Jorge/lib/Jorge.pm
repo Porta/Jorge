@@ -232,6 +232,7 @@ Again, all those methods are pretty self explanatory.
 get_all and get_count can receive parameters (as a hash). If they dont,
 both will retrive all the rows from the database to provide a result.
 
+=back
 
 =head2 Params Syntax for ObjectCollection based objects
 
@@ -263,7 +264,8 @@ Let's continue
     
     #Use a object as a parameter
     my %params = (User => $user);
-    
+
+
 =head2 get_all, get_next: Iterating.
 
 Once you invoke the method get_all (hint. if you invoke it without params)
@@ -298,9 +300,6 @@ modify the config_file variable in Jorge::Config file
 In your instance script / Main package.
 
 
-
-
-=back
 
 
 =head1 AUTHORS

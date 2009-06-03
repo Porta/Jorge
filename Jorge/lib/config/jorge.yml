@@ -1,0 +1,34 @@
+dispatch_debug: 1
+dispatch_prefix: Controllers
+dispatch_tmpl_path: /var/www/YOURAPPHERE/Views
+general:
+#   for pagination
+    pagelength: 20
+#   to be used in the base href html
+    base_url: http://YOURAPPHERE
+    templates_dir: /var/www/YOURAPPHERE/Views/
+    site_path: /var/www/YOURAPPHERE/
+    tmpl_path: /var/www/YOURAPPHERE/Views/
+    image_path: /var/www/YOURAPPHERE/Images/
+    image_size: 250
+
+database:
+    host: DB_HOST
+    db: DB_NAME
+    user: DB_USER
+    password: USER_PASSWORD
+
+routes:
+    - /: {app: Home, rm: index}
+    - home: {app: Home, rm: index}
+    - login: {app: Account, rm:  login}
+    - logout: {app:  Account, rm:  logout}
+    - user/register: {app:  Account, rm:  register}
+    - user/create: {app: Account, rm:  create_user}
+    - user/login: {app:  Account, rm:  do_login}
+    - user/edit: {app: Account, rm:  edit_user}
+    - user/save_changes: {app:  Account, rm:  save_changes}
+    - user/activate/:md5: {app:  Account, rm:  activate_user}
+    - user/retrieve_password: {app:  Account, rm:  retrieve_password}
+    - error: {}
+    - :app/:rm: {}
