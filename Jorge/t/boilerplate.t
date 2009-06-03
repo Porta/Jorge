@@ -53,6 +53,7 @@ TODO: {
   module_boilerplate_ok('lib/Jorge/DBEntity.pm');
   module_boilerplate_ok('lib/Jorge/ObjectCollection.pm');
   module_boilerplate_ok('lib/Jorge/Config.pm');
+  module_boilerplate_ok('lib/Jorge/Plugin/Md5.pm');
 
 
 }

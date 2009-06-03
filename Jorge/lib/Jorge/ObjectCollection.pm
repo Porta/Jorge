@@ -111,7 +111,7 @@ sub _create_query {
                 my $str = '?' x $value;
 
                 #IN expects an array in $value
-                my $str = join( ",", map { '?' } @$value );
+                $str = join( ",", map { '?' } @$value );
                 if (@query_params) {
                     $query .= " AND $key IN ($str)";
                 }
@@ -122,11 +122,11 @@ sub _create_query {
                 next;
             }
 
-            #Porta.
-            #Added MySql Between.
-            #NOTE: Allways provide min and max values
-            #$params{Count} = ['between',$q->param('mv') || '1',$q->param('Mv') || '1000000'];
-            #Start MySql BETWEEN Support.
+#Porta.
+#Added MySql Between.
+#NOTE: Allways provide min and max values
+#$params{Count} = ['between',$q->param('mv') || '1',$q->param('Mv') || '1000000'];
+#Start MySql BETWEEN Support.
             if ( lc($oper) eq 'between' ) {
                 if (@query_params) {
                     $query .= " AND $key BETWEEN ? AND ?";
@@ -246,34 +246,10 @@ sub get_all {
         ( $query, $query_params ) = $self->_create_query($params);
     }
 
-    if ( $params->{_order_by} ) {
-        if ( ref( $params->{_order_by} ) eq 'ARRAY' ) {
-            for my $param ( @{ $params->{_order_by} } ) {
-                my $asc;
-                if ( $param =~ /^\+/ ) {
-                    $asc = 1;
-                    substr( $param, 0, 1 ) = '';
-                }
-                next unless grep { $_ eq $param } @fields;
-                if ( $query !~ /ORDER BY/ ) {
-                    $query .= " ORDER BY $param" . ( $asc ? ' ASC' : ' DESC' );
-                }
-                else {
-                    $query .= ", $param" . ( $asc ? ' ASC' : ' DESC' );
-                }
-            }
-        }
-        else {
-            my $param = $params->{_order_by};
-            my $asc;
-            if ( $param =~ /^\+/ ) {
-                $asc = 1;
-                substr( $param, 0, 1 ) = '';
-            }
-            if ( grep { $_ eq $param } @fields ) {
-                $query .= ' ORDER BY ' . $param . ( $asc ? ' ASC' : ' DESC' );
-            }
-        }
+    my $obj = $self->create_object;
+    my $sth = $obj->_db->execute( $query, @$query_params );
+    while ( my $row = $sth->fetchrow_hashref ) {
+        push @$self, $row->{ $obj->_pk->[0] };
     }
 
     return scalar @$self;
@@ -351,3 +327,4 @@ under the same terms as Perl itself.
 =cut
 
 1;    # End of Jorge::ObjectCollection
+
