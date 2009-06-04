@@ -9,11 +9,11 @@ Jorge - ORM Made simple.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -39,7 +39,7 @@ will get used to it sooner that you may think.
 
 =head2 Defining your new Jorge based class
 
-=head3 YourClass.pm
+=head3 Start with: YourClass.pm
 
     package YourClass
     use base Jorge::DBEntity;
@@ -76,21 +76,23 @@ like passing the config info as parameters)
 create a config/jorge.yml file (in your current working dir, relative
 to the path the instance script will be working)
 
-=head3 config/jorge.yml
+=head3 Configuration. config/jorge.yml
 
     database:
         host: DB_HOST
         db: DB_NAME
         user: DB_USER
         password: USER_PASSWORD
-
+config
 This is what the config file should have. Plain simple. Since it's YAML,
 you will want to double check the syntax looking for tabs/spaces.
 
 
 Now, you can create a instance script and try the next.
 
-=head3 YourInstanceScript.pl
+=head3 Creating a new Object.
+
+YourInstanceScript.pl
 
     #!/usr/bin/perl
     use User;
@@ -133,7 +135,9 @@ through the basic operations
 
 =back
 
-=head3 YourInstanceScript.pl
+=head3 Creating a new object, insert, delete and get from/to the Database.
+
+YourInstanceScript.pl
 
     #!/usr/bin/perl
     use User;
@@ -177,7 +181,7 @@ Jorge::ObjectCollection
 
 =head2 Defining Your new Jorge based Object Collection
 
-=head3 YourClassCollection.pm
+=head3 Collections: YourClassCollection.pm
 
     package YourClassCollection;
     use base 'Jorge::ObjectCollection';
@@ -200,7 +204,7 @@ objects from the database.
 How? simple. Just pass the parameters to get the matching objects from the
 database.
 
-=head3 YourInstanceScript.pl
+=head3 Using Collections: YourInstanceScript.pl
 
     
     #!/usr/bin/perl
@@ -299,7 +303,90 @@ modify the config_file variable in Jorge::Config file
 
 In your instance script / Main package.
 
+=head1 Plugins
 
+You can create plugins for Jorge. Plugin support right now it's very raw,
+but has a lot of potential. Included in the distro you will find Jorge::Plugin::Md5
+which imports a subroutine into the Jorge::DBEntity based objects named
+encodeMd5.
+You can read the code to get an idea of how you can write your own Jorge
+plugins and how to extend your Jorge based objects. Feedback will be appreciated.
+
+
+=head2 Jorge::Plugin::Md5
+
+    package Jorge::Plugin::Md5;
+    use Digest::MD5;
+    use vars qw($VERSION @EXPORT);
+    use warnings;
+    use strict;
+
+    @EXPORT = qw(
+      encodeMd5
+    );
+    our $VERSION = '0.01';
+    sub import {
+        my $pkg     = shift;
+        my $callpkg = caller;
+        no strict 'refs';
+        foreach my $sym (@EXPORT) {
+            *{"${callpkg}::$sym"} = \&{$sym};
+        }
+    }
+    sub encodeMd5 {
+        my $self   = shift;
+        my @params = @_;
+
+        my $md5 = Digest::MD5->new;
+
+        foreach my $key (@params) {
+            my $k = $self->{$key};
+            $md5->add($k);
+        }
+        return substr( $md5->hexdigest, 0, 8 );
+    }
+
+To enable Jorge::Plugin::Md5 in your Jorge::DBEntity based objects, just
+use it in your package and the encodeMd5 subroutine will be available in
+your objects.
+
+=head3 Using Plugins: YourClass.pm
+
+    package User;
+
+    use base 'Jorge::DBEntity';
+    use Jorge::Plugin::Md5;
+
+
+    sub _fields {
+	
+	    my $table_name = 'User';
+	
+	    my @fields = qw(
+		    Id
+		    Password
+		    Date
+		    Md5
+		    Email
+	    );
+
+	    my %fields = (
+		    Id => { pk => 1, read_only => 1 },
+		    Date => { datetime => 1},
+	    );
+
+	    return [ \@fields, \%fields, $table_name ];
+    }
+    ;1
+
+=head3 Using Plugins: YourInstanceScript.pl
+
+
+    #!/usr/bin/perl
+
+    use User;
+    my $user = User->new(Email => 'jorge@foo.com', Password => 'sshhhhh');
+    print $user->encodeMd5(qw[Email Password]); #will print a Md5 hash
 
 
 =head1 AUTHORS
