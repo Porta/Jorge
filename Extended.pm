@@ -1,62 +1,19 @@
 package Jorge::Extended;
 use base 'Jorge::DBEntity';
+use Jorge::Plugin::Md5;
 
-#Helper class to extend DBEntity.pm
-use Digest::MD5;
-use strict;
+=head1 NAME
 
-sub get_by {
-    my ( $self, @params ) = @_;
+Jorge::Extended - Dummy package to keep backwards compatibility with
+older Jorge enabled apps
 
-    return 0 unless @params;
+=head1 VERSION
 
-    my $table_name = $self->_fields->[2];
-    my %fields     = %{ $self->_fields->[1] };
+Version 0.01
 
-    my @cols;
-    my @vals;
+=cut
 
-    foreach my $col (@params) {
-        push( @cols, "$col = ?" );
-        my $v;
-
-        #Porta
-        #Allows to use a object as a param for get_by method
-        if ( $fields{$col}->{class} ) {
-            my $p = $self->{$col}->_pk;
-            my $o = $self->{$col};
-            $v = $o->{ $$p[0] };
-        }
-        else {
-            $v = $self->{$col};
-        }
-        push( @vals, $v );
-    }
-
-    my $columns = join( ' AND ', @cols );
-    my $query = "SELECT * FROM $table_name WHERE ($columns)";
-
-    #warn ($query, @vals);
-    my $return = $self->_db->prepare($query);
-    my $sth = $self->_db->execute_prepared( $return, @vals );
-
-    $self->_load( $sth->fetchrow_hashref );
-
-    return $self;
-}
-
-sub encodeMd5 {
-    my $self   = shift;
-    my @params = @_;
-
-    my $md5 = Digest::MD5->new;
-
-	foreach my $key (@params){
-		my $k = $self->{$key};
-		$md5->add($k);
-	}
-	return substr($md5->hexdigest,0,8);
-}
+our $VERSION = '0.01';
 
 1
 __END__
