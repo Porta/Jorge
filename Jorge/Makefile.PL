@@ -14,6 +14,11 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
     },
+    META_MERGE          => {
+        resources => {
+            repository  =>  'https://github.com/Porta/Jorge',
+        },
+    },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Jorge-*' },
 );
